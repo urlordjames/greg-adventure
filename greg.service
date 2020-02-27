@@ -1,0 +1,22 @@
+[Unit]
+Description = http server for greg-adventure
+Requires = docker.service
+After = docker.service
+
+[Service]
+User = root
+Group = root
+
+Restart = always
+StandardInput = null
+StandardOutput = journal
+StandardError = journal
+
+ExecStart = /usr/bin/docker run --rm -t \
+	-p 82:80/tcp \
+	--name greg_server \
+	greg
+ExecStop = /usr/bin/docker container rm greg_server -f
+
+[Install]
+WantedBy = local.target
