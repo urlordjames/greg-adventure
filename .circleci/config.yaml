@@ -1,0 +1,9 @@
+version: 2.1
+jobs:
+  deploy:
+    steps:
+      - add_ssh_keys:
+          fingerprints: "0d:fc:a3:98:93:03:c2:24:6e:9f:79:a0:5a:ca:84:84"
+      - run:
+          name: deploy
+          command: "touch test.txt"
