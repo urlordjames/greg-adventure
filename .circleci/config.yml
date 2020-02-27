@@ -9,7 +9,7 @@ jobs:
       - run:
           name: deploy
           command: |
-            ssh root@173.255.230.249 "/root/build.sh"
+            ssh root@173.255.230.249 "/root/greg/build.sh"
 workflows:
    version: 2
    build-and-deploy:
