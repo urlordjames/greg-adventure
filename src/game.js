@@ -42,7 +42,6 @@ function frictionstep(coef) {
 }
 
 function loop() {
-    if (level == null) { return }
     deltatime = new Date().getTime() - time
     let move = keystomove(movespeed)
     for (child in canvas.children) {
@@ -54,15 +53,7 @@ function loop() {
     frictionstep(movespeed * 0.8)
     x += acx
     y += acy
-    let terminate = level["init"]["terminate"]
-    let color = level["init"]["colors"]
-    for (i in level["dynamic"]) {
-        drawpixel(color[level["dynamic"][i]], i % terminate, Math.floor(i / terminate), true)
-    }
     drawimg("greg.png", x, y, 1, true)
-    for (i in level["static"]) {
-        drawpixel(color[level["static"][i]], i % terminate, Math.floor(i / terminate), true)
-    }
     time = new Date().getTime()
 }
 
