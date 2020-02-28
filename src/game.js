@@ -53,7 +53,10 @@ function loop() {
     frictionstep(0.02)
     x += acx
     y += acy
-    drawimg("cheezethem.png", 0, 0, 1, true)
+    for (i in level.entities) {
+        let entity = level.entities[i]
+        drawimg(entity["name"], entity["x"], entity["y"], entity["scale"], entity["dynamic"])
+    }
     drawimg("greg.png", x, y, 1, true)
     time = new Date().getTime()
 }
@@ -67,19 +70,6 @@ function drawimg(source, xpos, ypos, scale, dynamic) {
         ypos -= (y - centery)
     }
     context.drawImage(img, xpos, ypos, img.width * scale, img.height * scale)
-}
-
-function drawpixel(color, xpos, ypos, dynamic) {
-    var pixel = context.createImageData(1,1)
-    if (dynamic) {
-        xpos -= (x - centerx)
-        ypos -= (y - centery)
-    }
-    pixel.data[0] = color[0]
-    pixel.data[1] = color[1]
-    pixel.data[2] = color[2]
-    pixel.data[3] = color[3]
-    context.putImageData(pixel, xpos, ypos)
 }
 
 function main() {
