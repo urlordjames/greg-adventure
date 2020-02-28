@@ -2,7 +2,7 @@
 join Gregory in his javascript browser game
 
 # how to play?
-currently, the game is available on <http://173.255.230.249:82>
+currently, the game is available on <http://173.255.230.249:8080>
 
 # how to install on my server? (linux)
 after making sure you have [docker](https://docs.docker.com/install/) and [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) installed, make a clone of the repository and cd into it
@@ -26,7 +26,7 @@ now you can start the systemd service
 ```bash
 systemctl start greg.service
 ```
-yay it's up now! it can be found at [http://(your IP):82/](http://127.0.0.1:82/)
+yay it's up now! it can be found at [http://(your IP):82/](http://127.0.0.1:8080/)
 
 # contributing
 not certain why you'd want to contribute but there's not a particular protocol or anything, just submit a PR I guess
