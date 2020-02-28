@@ -15,7 +15,7 @@ let deltatime = 0
 let time = new Date().getTime()
 let acx = 0
 let acy = 0
-const movespeed = 0.1
+const movespeed = 0.3
 const centerx = 500
 const centery = 250
 
@@ -37,8 +37,8 @@ function keystomove(step) {
 }
 
 function frictionstep(coef) {
-    acx -= coef * acx
-    acy -= coef * acy
+    acx -= coef * acx * deltatime
+    acy -= coef * acy * deltatime
 }
 
 function loop() {
@@ -50,9 +50,10 @@ function loop() {
     context.clearRect(0, 0, canvas.width, canvas.height);
     acx += move[0] * deltatime
     acy += move[1] * deltatime
-    frictionstep(movespeed * 0.8)
+    frictionstep(0.02)
     x += acx
     y += acy
+    drawimg("cheezethem.png", 0, 0, 1, true)
     drawimg("greg.png", x, y, 1, true)
     time = new Date().getTime()
 }
