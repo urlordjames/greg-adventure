@@ -51,15 +51,20 @@ function loop() {
     frictionstep(movespeed * 0.8)
     x += acx
     y += acy
-    drawimg("greg.png", x, y, 1)
+    drawimg("cheezethem.png", 100, 0, 1, true)
+    drawimg("greg.png", x, y, 1, true)
     time = new Date().getTime()
 }
 
-function drawimg(source, x, y, scale) {
+function drawimg(source, xpos, ypos, scale, dynamic) {
     let img = document.createElement("img")
     img.parentElement = canvas
     img.src = source
-    context.drawImage(img, x, y, img.width * scale, img.height * scale)
+    if (dynamic) {
+        xpos -= (x - 500)
+        ypos -= (y - 250)
+    }
+    context.drawImage(img, xpos, ypos, img.width * scale, img.height * scale)
 }
 
 function main() {
