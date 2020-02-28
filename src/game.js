@@ -16,6 +16,8 @@ let time = new Date().getTime()
 let acx = 0
 let acy = 0
 const movespeed = 0.1
+const centerx = 500
+const centery = 250
 
 function keystomove(step) {
     let vec = [0, 0]
@@ -40,6 +42,7 @@ function frictionstep(coef) {
 }
 
 function loop() {
+    if (level == null) { return }
     deltatime = new Date().getTime() - time
     let move = keystomove(movespeed)
     for (child in canvas.children) {
@@ -51,8 +54,15 @@ function loop() {
     frictionstep(movespeed * 0.8)
     x += acx
     y += acy
-    drawimg("cheezethem.png", 100, 0, 1, true)
+    let terminate = level["init"]["terminate"]
+    let color = level["init"]["colors"]
+    for (i in level["dynamic"]) {
+        drawpixel(color[level["dynamic"][i]], i % terminate, Math.floor(i / terminate), true)
+    }
     drawimg("greg.png", x, y, 1, true)
+    for (i in level["static"]) {
+        drawpixel(color[level["static"][i]], i % terminate, Math.floor(i / terminate), true)
+    }
     time = new Date().getTime()
 }
 
@@ -61,10 +71,23 @@ function drawimg(source, xpos, ypos, scale, dynamic) {
     img.parentElement = canvas
     img.src = source
     if (dynamic) {
-        xpos -= (x - 500)
-        ypos -= (y - 250)
+        xpos -= (x - centerx)
+        ypos -= (y - centery)
     }
     context.drawImage(img, xpos, ypos, img.width * scale, img.height * scale)
+}
+
+function drawpixel(color, xpos, ypos, dynamic) {
+    var pixel = context.createImageData(1,1)
+    if (dynamic) {
+        xpos -= (x - centerx)
+        ypos -= (y - centery)
+    }
+    pixel.data[0] = color[0]
+    pixel.data[1] = color[1]
+    pixel.data[2] = color[2]
+    pixel.data[3] = color[3]
+    context.putImageData(pixel, xpos, ypos)
 }
 
 function main() {
