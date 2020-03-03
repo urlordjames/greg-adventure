@@ -37,9 +37,9 @@ while not done:
             done = True
         if pygame.mouse.get_pressed()[0]:
             print(pygame.mouse.get_pos())
+    screen.fill((255, 255, 255))
     for ent in level["entities"]:
         screen.blit(images[ent["name"]], (ent["x"] + 500, ent["y"] + 250))
-    screen.fill((255, 255, 255))
     pygame.display.update()
     pygame.display.flip()
     clock.tick(60)
