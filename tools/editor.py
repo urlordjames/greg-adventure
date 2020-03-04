@@ -1,4 +1,5 @@
 import pygame
+import copy
 
 pygame.init()
 screen = pygame.display.set_mode((1000, 500))
@@ -6,6 +7,8 @@ done = False
 f = open("./levels/main.level", "r")
 level = eval(f.read())
 f.close()
+
+undo = []
 
 movespeed = 5
 
@@ -40,6 +43,9 @@ def drawselection(i):
     ent = level["entities"][i]
     pygame.draw.rect(screen, (255, 0, 0), getrectfroment(ent), 10)
 
+def copystate():
+    undo.append(copy.deepcopy(level))
+
 while not done:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -52,6 +58,15 @@ while not done:
                 x, y = pygame.mouse.get_pos()
                 if getrectfroment(ent).collidepoint(x, y):
                     selected = i
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_d:
+                copystate()
+                del level["entities"][selected]
+                selected = 0
+                print("delete")
+            if event.key == pygame.K_z:
+                level = undo[-1]
+                print("undo")
     keys = pygame.key.get_pressed()
     move()
     screen.fill((255, 255, 255))
