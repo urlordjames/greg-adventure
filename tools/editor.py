@@ -3,25 +3,9 @@ import pygame
 pygame.init()
 screen = pygame.display.set_mode((1000, 500))
 done = False
-level = {
-    "entities": [
-        {"name": "cheezethem.png", 
-        "x": -100,
-        "y": 100,
-        "scale":1,
-        "dynamic": True},
-        {"name": "cheezethem.png", 
-        "x": 0,
-        "y": 100,
-        "scale":1,
-        "dynamic": True},
-        {"name": "cheezethem.png", 
-        "x": 100,
-        "y": 100,
-        "scale":1,
-        "dynamic": True}
-    ]
-}
+f = open("./levels/main.level", "r")
+level = eval(f.read())
+f.close()
 
 movespeed = 5
 
