@@ -28,6 +28,11 @@ def move():
     if keys[pygame.K_DOWN]:
         camera[1] += movespeed
 
+def transform(x, y):
+    return (x + (500 - camera[0]), y + (250 - camera[1]))
+
+selected = 0
+
 while not done:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -36,12 +41,16 @@ while not done:
             f.close()
             done = True
         if pygame.mouse.get_pressed()[0]:
-            print(pygame.mouse.get_pos())
+            for i, ent in enumerate(level["entities"]):
+                x, y = pygame.mouse.get_pos()
+                if images[ent["name"]].get_rect(topleft=transform(ent["x"], ent["y"])).collidepoint(x, y):
+                    selected = i
+            print(selected)
     keys = pygame.key.get_pressed()
     move()
     screen.fill((255, 255, 255))
     for ent in level["entities"]:
-        screen.blit(images[ent["name"]], (ent["x"] + (500 - camera[0]), ent["y"] + (250 - camera[1])))
+        screen.blit(images[ent["name"]], transform(ent["x"], ent["y"]))
     pygame.display.update()
     pygame.display.flip()
     clock.tick(60)
