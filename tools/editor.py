@@ -48,10 +48,7 @@ while not done:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             f = open("./levels/main.level", "w")
-            export = "const level = " + str(level)
-            export = export.replace("'dynamic': True", "'dynamic': true")
-            export = export.replace("'dynamic': False", "'dynamic': false")
-            f.write(export)
+            f.write(str(level))
             f.close()
             done = True
         if pygame.mouse.get_pressed()[0]:
