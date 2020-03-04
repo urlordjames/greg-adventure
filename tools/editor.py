@@ -33,6 +33,13 @@ def transform(x, y):
 
 selected = 0
 
+def getrectfroment(ent):
+    return images[ent["name"]].get_rect(topleft=transform(ent["x"], ent["y"]))
+
+def drawselection(i):
+    ent = level["entities"][i]
+    pygame.draw.rect(screen, (255, 0, 0), getrectfroment(ent), 10)
+
 while not done:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -43,14 +50,14 @@ while not done:
         if pygame.mouse.get_pressed()[0]:
             for i, ent in enumerate(level["entities"]):
                 x, y = pygame.mouse.get_pos()
-                if images[ent["name"]].get_rect(topleft=transform(ent["x"], ent["y"])).collidepoint(x, y):
+                if getrectfroment(ent).collidepoint(x, y):
                     selected = i
-            print(selected)
     keys = pygame.key.get_pressed()
     move()
     screen.fill((255, 255, 255))
     for ent in level["entities"]:
         screen.blit(images[ent["name"]], transform(ent["x"], ent["y"]))
+    drawselection(selected)
     pygame.display.update()
     pygame.display.flip()
     clock.tick(60)
