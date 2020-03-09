@@ -66,6 +66,7 @@ while not done:
                 print("delete")
             if event.key == pygame.K_z:
                 level = undo[-1]
+                del undo[-1]
                 print("undo")
     keys = pygame.key.get_pressed()
     move()
