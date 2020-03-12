@@ -1,11 +1,12 @@
 import pygame
 import copy
+import json
 
 pygame.init()
 screen = pygame.display.set_mode((1000, 500))
 done = False
 f = open("./levels/main.level", "r")
-level = eval(f.read())
+level = json.loads(f.read())
 f.close()
 
 undo = []
@@ -50,7 +51,7 @@ while not done:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             f = open("./levels/main.level", "w")
-            f.write(str(level))
+            f.write(json.dumps(level))
             f.close()
             done = True
         if pygame.mouse.get_pressed()[0]:
