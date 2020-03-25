@@ -1,0 +1,24 @@
+{
+  "name": "greg-adventure-node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/urlordjames/greg-adventure.git"
+  },
+  "author": "urlordjames",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/urlordjames/greg-adventure/issues"
+  },
+  "homepage": "https://github.com/urlordjames/greg-adventure#readme",
+  "dependencies": {
+    "serve-static": "1.14.1",
+    "ws": "7.2.3"
+  }
+}

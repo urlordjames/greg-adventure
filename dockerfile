@@ -1,3 +1,5 @@
-FROM php:7.2-apache
+FROM node:13-stretch
 
-COPY src /var/www/html
+COPY src .
+RUN npm install
+ENTRYPOINT npm run
