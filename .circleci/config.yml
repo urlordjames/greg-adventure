@@ -1,5 +1,11 @@
 version: 2.1
 jobs:
+  test:
+    docker:
+      - image: "circleci/node"
+    steps:
+      - checkout
+      - run: cd src && npm test
   deploy:
     machine:
       enabled: true
@@ -14,7 +20,10 @@ workflows:
    version: 2
    build-and-deploy:
      jobs:
+      - test
       - deploy:
+        requires:
+          -test
         filters:
           branches:
             only: master
