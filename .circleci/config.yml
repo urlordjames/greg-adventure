@@ -22,5 +22,8 @@ workflows:
      jobs:
       - test
       - deploy:
-        requires:
-          - test
+          requires:
+            - test
+          filters:
+            branches:
+              only: master
