@@ -1,5 +1,5 @@
 /*client
-console.log("hello, this is the client's script")
+console.log("if you find an issues, please submit them at https://github.com/urlordjames/greg-adventure/issues")
 clientend*/
 class PacketBuilder {
     constructor(data) {
