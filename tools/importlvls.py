@@ -1,5 +1,3 @@
-import json
-
 export = ["main.level"]
 
 for level in export:

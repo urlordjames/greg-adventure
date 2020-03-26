@@ -73,6 +73,7 @@ function drawimg(source, xpos, ypos, scale, dynamic) {
 }
 
 function main() {
+    console.log(new PacketBuilder({"shortcut": "ack"}).getjson())
     canvas = document.getElementById("canvas")
     context = canvas.getContext("2d")
     setInterval(loop, upm)
