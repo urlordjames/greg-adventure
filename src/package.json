@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "node --check game.js && node --check server.js",
+    "test": "node --check *.js",
     "start": "node server.js"
   },
   "repository": {
