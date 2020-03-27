@@ -20,6 +20,7 @@ const centerx = 500
 const centery = 250
 const url = new URL(window.location.href);
 const serverscript = "ws://" + url.hostname + ":" + url.port
+let level = {}
 
 function keystomove(step) {
     let vec = [0, 0]
@@ -81,7 +82,8 @@ function sendpacket(data) {
         socket.send(tosend)
     }
 }
-function syncasync() {
+
+function sync() {
     let socket = new WebSocket(serverscript)
     let tosend = buildpacket({"shortcut": "syncreq"})
     socket.onopen = function(e) {
@@ -92,8 +94,40 @@ function syncasync() {
     }
 }
 
-function sync() {
-    syncasync()
+function getnextid() {
+    console.log("getting id from server...")
+    let socket = new WebSocket(serverscript)
+    let tosend = buildpacket({"shortcut": "getid"})
+    socket.onopen = function(e) {
+        socket.send(tosend)
+    }
+    let promise = new Promise(function (resolve, reject) {
+    socket.onmessage = function(e) {
+        let id = JSON.parse(e.data)["id"]
+            console.log("got id " + id)
+            resolve(id)
+        }
+        socket.onerror = function(e) {
+            reject(new Error("bad things have happened"))
+        }
+    })
+    return promise
+}
+
+function updatepos(socket, id) {
+    id.then(function (resolvedid) {
+        let tosend = buildpacket({"shortcut": "move", "x" : x, "y": y, "id": resolvedid})
+        console.log(tosend)
+        socket.send(tosend)
+    })
+}
+
+function possocket() {
+    let playerid = getnextid()
+    let socket = new WebSocket(serverscript)
+    socket.onopen = function(e) {
+        setInterval(updatepos(socket, playerid), upm * 5)
+    }
 }
 
 function main() {
@@ -101,6 +135,7 @@ function main() {
     context = canvas.getContext("2d")
     setInterval(loop, upm)
     setInterval(sync, 300)
+    possocket()
 }
 
 document.addEventListener("DOMContentLoaded", main)

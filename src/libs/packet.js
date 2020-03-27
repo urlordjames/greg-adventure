@@ -16,10 +16,19 @@ function buildpacket(data) {
             case "sync":
                 packet = {"type": "sync", "lvl": data["gamestate"]}
                 break
+            case "move":
+                packet = {"type": "move", "x": data["x"], "y": data["y"], "id": data["id"]}
+                break
+            case "getid":
+                packet = {"type": "getid"}
+                break
+            case "setid":
+                packet = {"type": "giveid", "id": data["id"]}
+                break
         }
     }
     else {
-        packet = data
+        let packet = data
     }
     return JSON.stringify(packet)
 }

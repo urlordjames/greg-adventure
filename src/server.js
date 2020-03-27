@@ -4,14 +4,20 @@ const finalhandler = require("finalhandler")
 const WebSocket = require("ws")
 const url = require('url');
 const packet = require("./libs/packet.js")
+const main = require("./main.js")
 
 let egg = 100
 let egg2 = -100
+
+let level = main.level
 
 setInterval(function() {
     egg = Math.floor(Math.random() * Math.floor(100))
     egg2 = Math.floor(Math.random() * Math.floor(100))
 }, 1000)
+setInterval(function() {
+    level["players"] = {}
+}, 10000)
 
 var serve = serveStatic(__dirname, {"index": ["index.html"]})
 
@@ -19,12 +25,28 @@ var server = http.createServer()
 
 const wss = new WebSocket.Server({noServer: true})
 
-wss.on("connection", ws => {
-    ws.on("message", message => {
+wss.on("connection", function(ws) {
+    ws.on("message", function (message) {
         console.log(message)
-        let level = {"entities": [{"name": "cheezethem.png", "x": egg, "y": egg2, "scale": 1, "dynamic": true}, {"name": "cheezethem.png", "x": 0, "y": 100, "scale": 1, "dynamic": true}, {"name": "cheezethem.png", "x": 100, "y": 100, "scale": 1, "dynamic": true}]}
-        ws.send(packet.buildpacket({"shortcut": "sync", "gamestate": level}))
-        ws.close()
+        let msg = JSON.parse(message)
+        switch (msg["type"]) {
+            case "sync":
+                level["entities"] = [{"name": "cheezethem.png", "x": egg, "y": egg2, "scale": 1, "dynamic": true}]
+                ws.send(packet.buildpacket({"shortcut": "sync", "gamestate": level}))
+                ws.close()
+                break
+            case "move":
+                level["players"][msg["id"]] = {"x": msg["x"], "y": msg["y"]}
+                break
+            case "getid":
+                let id = Math.floor(Math.random() * Math.floor(999999))
+                console.log(id)
+                ws.send(packet.buildpacket({"shortcut": "setid", "id": id}))
+                break
+            default:
+                ws.close()
+                break
+        }
     })
 })
 
