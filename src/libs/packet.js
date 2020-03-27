@@ -11,16 +11,16 @@ function buildpacket(data) {
                 packet = {"type": "ack", "status": false}
                 break
             case "syncreq":
-                packet = {"type": "sync"}
+                packet = {"type": "sync", "id": data["id"], "auth": data["auth"]}
                 break
             case "sync":
                 packet = {"type": "sync", "lvl": data["gamestate"]}
                 break
             case "move":
-                packet = {"type": "move", "x": data["x"], "y": data["y"], "id": data["id"]}
+                packet = {"type": "move", "x": data["x"], "y": data["y"], "id": data["id"], "auth": data["auth"]}
                 break
             case "getid":
-                packet = {"type": "getid"}
+                packet = {"type": "getid", "auth": data["auth"]}
                 break
             case "setid":
                 packet = {"type": "giveid", "id": data["id"]}

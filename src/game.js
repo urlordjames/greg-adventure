@@ -21,6 +21,16 @@ const centery = 250
 const url = new URL(window.location.href);
 const serverscript = "ws://" + url.hostname + ":" + url.port
 let level = {}
+let auth = genauth()
+
+function genauth() {
+    let ranstring = ""
+    const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+    for(var i = 0; i < 16; i++) {
+        ranstring += possible.charAt(Math.floor(Math.random() * possible.length))
+    }
+    return ranstring
+}
 
 function keystomove(step) {
     let vec = [0, 0]
@@ -83,21 +93,10 @@ function sendpacket(data) {
     }
 }
 
-function sync() {
-    let socket = new WebSocket(serverscript)
-    let tosend = buildpacket({"shortcut": "syncreq"})
-    socket.onopen = function(e) {
-        socket.send(tosend)
-    }
-    socket.onmessage = function(e) {
-        level = JSON.parse(e.data)["lvl"]
-    }
-}
-
-function getnextid() {
+function getnextid(playerid) {
     console.log("getting id from server...")
     let socket = new WebSocket(serverscript)
-    let tosend = buildpacket({"shortcut": "getid"})
+    let tosend = buildpacket({"shortcut": "getid", "id": playerid, "auth": auth})
     socket.onopen = function(e) {
         socket.send(tosend)
     }
@@ -115,15 +114,26 @@ function getnextid() {
 }
 
 function updatepos(socket, id) {
-    let tosend = buildpacket({"shortcut": "move", "x" : x, "y": y, "id": id})
+    let tosend = buildpacket({"shortcut": "move", "x" : x, "y": y, "id": id, "auth": auth})
+    console.log(tosend)
     socket.send(tosend)
 }
 
-function possocket() {
-    let playerid = getnextid()
+function possocket(playerid) {
     let socket = new WebSocket(serverscript)
     socket.onopen = function(e) {
-        playerid.then(function (resolvedid) {setInterval(function () {updatepos(socket, resolvedid)}, upm * 50)})
+        setInterval(function () {updatepos(socket, playerid)}, upm * 50)
+    }
+}
+
+function sync(playerid) {
+    let socket = new WebSocket(serverscript)
+    let tosend = buildpacket({"shortcut": "syncreq", "id": playerid, "auth": auth})
+    socket.onopen = function(e) {
+        socket.send(tosend)
+    }
+    socket.onmessage = function(e) {
+        level = JSON.parse(e.data)["lvl"]
     }
 }
 
@@ -131,8 +141,12 @@ function main() {
     canvas = document.getElementById("canvas")
     context = canvas.getContext("2d")
     setInterval(loop, upm)
-    sync()
-    possocket()
+    let idprmose = getnextid()
+    idprmose.then(function (playerid) {
+        console.log(playerid)
+        sync(playerid)
+        possocket(playerid)
+    })
 }
 
 document.addEventListener("DOMContentLoaded", main)
