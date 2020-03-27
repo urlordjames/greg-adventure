@@ -31,7 +31,10 @@ wss.on("connection", function(ws) {
         let msg = JSON.parse(message)
         switch (msg["type"]) {
             case "sync":
-                setInterval(function() {ws.send(packet.buildpacket({"shortcut": "sync", "gamestate": level}))}, 30)
+                let interval = setInterval(function () {
+                    ws.send(packet.buildpacket({"shortcut": "sync", "gamestate": level}))
+                }, 30)
+                ws.onclose = function () {clearInterval(interval)}
                 break
             case "move":
                 level["players"][msg["id"]] = {"x": msg["x"], "y": msg["y"]}
