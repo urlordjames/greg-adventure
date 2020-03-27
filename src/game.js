@@ -18,6 +18,8 @@ let acy = 0
 const movespeed = 0.3
 const centerx = 500
 const centery = 250
+const url = new URL(window.location.href);
+const serverscript = "ws://" + url.hostname + ":" + url.port
 
 function keystomove(step) {
     let vec = [0, 0]
@@ -47,7 +49,7 @@ function loop() {
     for (child in canvas.children) {
         canvas.innerHTML = ""
     }
-    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.clearRect(0, 0, canvas.width, canvas.height)
     acx += move[0] * deltatime
     acy += move[1] * deltatime
     frictionstep(0.02)
@@ -72,13 +74,36 @@ function drawimg(source, xpos, ypos, scale, dynamic) {
     context.drawImage(img, xpos, ypos, img.width * scale, img.height * scale)
 }
 
+function sendpacket(data) {
+    let socket = new WebSocket(serverscript)
+    let tosend = buildpacket(data)
+    socket.onopen = function(e) {
+        socket.send(tosend)
+    }
+}
+function syncasync() {
+    let socket = new WebSocket(serverscript)
+    let tosend = buildpacket({"shortcut": "syncreq"})
+    socket.onopen = function(e) {
+        socket.send(tosend)
+    }
+    socket.onmessage = function(e) {
+        level = JSON.parse(e.data)["lvl"]
+    }
+}
+
+function sync() {
+    syncasync()
+}
+
 function main() {
     canvas = document.getElementById("canvas")
     context = canvas.getContext("2d")
     setInterval(loop, upm)
+    setInterval(sync, 300)
 }
 
-document.addEventListener("DOMContentLoaded", main);
+document.addEventListener("DOMContentLoaded", main)
 document.addEventListener("keydown", function(event) {
     inputs[keys[event.keyCode]] = true
 })

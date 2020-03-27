@@ -14,7 +14,6 @@ StandardError = journal
 
 ExecStart = /usr/bin/docker run --rm -t \
 	-p 8080:8080/tcp \
-	-p 8081:8081/tcp \
 	--name greg_server \
 	greg
 ExecStop = /usr/bin/docker container rm greg_server -f
