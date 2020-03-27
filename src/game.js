@@ -115,18 +115,15 @@ function getnextid() {
 }
 
 function updatepos(socket, id) {
-    id.then(function (resolvedid) {
-        let tosend = buildpacket({"shortcut": "move", "x" : x, "y": y, "id": resolvedid})
-        console.log(tosend)
-        socket.send(tosend)
-    })
+    let tosend = buildpacket({"shortcut": "move", "x" : x, "y": y, "id": id})
+    socket.send(tosend)
 }
 
 function possocket() {
     let playerid = getnextid()
     let socket = new WebSocket(serverscript)
     socket.onopen = function(e) {
-        setInterval(updatepos(socket, playerid), upm * 5)
+        playerid.then(function (resolvedid) {setInterval(function () {updatepos(socket, resolvedid)}, upm * 50)})
     }
 }
 
@@ -134,7 +131,7 @@ function main() {
     canvas = document.getElementById("canvas")
     context = canvas.getContext("2d")
     setInterval(loop, upm)
-    setInterval(sync, 300)
+    sync()
     possocket()
 }
 

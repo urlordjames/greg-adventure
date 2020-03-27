@@ -14,7 +14,8 @@ let level = main.level
 setInterval(function() {
     egg = Math.floor(Math.random() * Math.floor(100))
     egg2 = Math.floor(Math.random() * Math.floor(100))
-}, 1000)
+    level["entities"] = [{"name": "cheezethem.png", "x": egg, "y": egg2, "scale": 1, "dynamic": true}]
+}, 100)
 setInterval(function() {
     level["players"] = {}
 }, 10000)
@@ -27,13 +28,10 @@ const wss = new WebSocket.Server({noServer: true})
 
 wss.on("connection", function(ws) {
     ws.on("message", function (message) {
-        console.log(message)
         let msg = JSON.parse(message)
         switch (msg["type"]) {
             case "sync":
-                level["entities"] = [{"name": "cheezethem.png", "x": egg, "y": egg2, "scale": 1, "dynamic": true}]
-                ws.send(packet.buildpacket({"shortcut": "sync", "gamestate": level}))
-                ws.close()
+                setInterval(function() {ws.send(packet.buildpacket({"shortcut": "sync", "gamestate": level}))}, 30)
                 break
             case "move":
                 level["players"][msg["id"]] = {"x": msg["x"], "y": msg["y"]}
@@ -42,6 +40,7 @@ wss.on("connection", function(ws) {
                 let id = Math.floor(Math.random() * Math.floor(999999))
                 console.log(id)
                 ws.send(packet.buildpacket({"shortcut": "setid", "id": id}))
+                ws.close()
                 break
             default:
                 ws.close()
