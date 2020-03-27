@@ -55,7 +55,7 @@ wss.on("connection", function(ws) {
                 break
             case "move":
                 if (!authenticate(msg)) {ws.close(); break}
-                level["players"][msg["id"]] = {"x": msg["x"], "y": msg["y"]}
+                level["players"][msg["id"]] = {"x": msg["x"], "y": msg["y"], "acx": msg["acx"], "acy": msg["acy"]}
                 break
             case "getid":
                 let id = Math.floor(Math.random() * Math.floor(999999))

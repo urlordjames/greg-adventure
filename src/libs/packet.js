@@ -17,7 +17,7 @@ function buildpacket(data) {
                 packet = {"type": "sync", "lvl": data["gamestate"]}
                 break
             case "move":
-                packet = {"type": "move", "x": data["x"], "y": data["y"], "id": data["id"], "auth": data["auth"]}
+                packet = {"type": "move", "x": data["x"], "y": data["y"], "acx": data["acx"], "acy": data["acy"], "id": data["id"], "auth": data["auth"]}
                 break
             case "getid":
                 packet = {"type": "getid", "auth": data["auth"]}

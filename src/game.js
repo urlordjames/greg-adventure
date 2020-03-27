@@ -22,6 +22,7 @@ const url = new URL(window.location.href);
 const serverscript = "ws://" + url.hostname + ":" + url.port
 let level = {}
 let auth = genauth()
+let playerid = -1
 
 function genauth() {
     let ranstring = ""
@@ -66,6 +67,7 @@ function loop() {
     frictionstep(0.02)
     x += acx
     y += acy
+    extrapolateplayers()
     for (i in level.entities) {
         let entity = level.entities[i]
         drawimg(entity["name"], entity["x"], entity["y"], entity["scale"], entity["dynamic"])
@@ -75,11 +77,13 @@ function loop() {
 }
 
 function drawplayers() {
-    //TODO: remove self from sync before drawing to screen
     if (level.players.length > 0) {
         return level
     }
     for (pid in level.players) {
+        if (pid == playerid) {
+            continue
+        }
         let player = level.players[pid]
         level.entities.push({"name": "greg.png", "x": player["x"], "y": player["y"], "id": pid, "scale": 1, "dynamic": true})
     }
@@ -102,6 +106,7 @@ function sendpacket(data) {
     let tosend = buildpacket(data)
     socket.onopen = function(e) {
         socket.send(tosend)
+        socket.close()
     }
 }
 
@@ -126,7 +131,7 @@ function getnextid(playerid) {
 }
 
 function updatepos(socket, id) {
-    let tosend = buildpacket({"shortcut": "move", "x" : x, "y": y, "id": id, "auth": auth})
+    let tosend = buildpacket({"shortcut": "move", "x" : x, "y": y, "acx" : acx, "acy": acy, "id": id, "auth": auth})
     socket.send(tosend)
 }
 
@@ -154,7 +159,8 @@ function main() {
     context = canvas.getContext("2d")
     setInterval(loop, upm)
     let idprmose = getnextid()
-    idprmose.then(function (playerid) {
+    idprmose.then(function (resolvedid) {
+        playerid = resolvedid
         console.log(playerid)
         sync(playerid)
         possocket(playerid)
