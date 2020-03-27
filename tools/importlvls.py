@@ -5,5 +5,5 @@ for level in export:
     lvl = f.read()
     f.close()
     f = open("./src/" + level[:-5] + "js", "w")
-    f.write("const level = " + lvl)
+    f.write("let level = " + lvl)
     f.close()
