@@ -18,7 +18,7 @@ setInterval(function() {
 }, 100)
 setInterval(function() {
     level["players"] = {}
-}, 10000)
+}, 1000)
 
 let connections = {}
 
@@ -29,7 +29,7 @@ var server = http.createServer()
 const wss = new WebSocket.Server({noServer: true})
 
 function authenticate(msg) {
-    if (msg["auth"] != undefined && connections[msg["id"]]["auth"] === msg["auth"]) {
+    if (msg["auth"] != undefined && connections[msg["id"]] != undefined && connections[msg["id"]]["auth"] === msg["auth"]) {
         return true
     }
     else {
@@ -48,7 +48,10 @@ wss.on("connection", function(ws) {
                 let interval = setInterval(function () {
                     ws.send(packet.buildpacket({"shortcut": "sync", "gamestate": level}))
                 }, 30)
-                ws.onclose = function () {clearInterval(interval)}
+                ws.onclose = function () {
+                    clearInterval(interval)
+                    delete connections[msg["id"]]
+                }
                 break
             case "move":
                 if (!authenticate(msg)) {ws.close(); break}
