@@ -74,6 +74,18 @@ function loop() {
     time = new Date().getTime()
 }
 
+function drawplayers() {
+    //TODO: remove self from sync before drawing to screen
+    if (level.players.length > 0) {
+        return level
+    }
+    for (pid in level.players) {
+        let player = level.players[pid]
+        level.entities.push({"name": "greg.png", "x": player["x"], "y": player["y"], "id": pid, "scale": 1, "dynamic": true})
+    }
+    return level
+}
+
 function drawimg(source, xpos, ypos, scale, dynamic) {
     let img = document.createElement("img")
     img.parentElement = canvas
@@ -115,14 +127,13 @@ function getnextid(playerid) {
 
 function updatepos(socket, id) {
     let tosend = buildpacket({"shortcut": "move", "x" : x, "y": y, "id": id, "auth": auth})
-    console.log(tosend)
     socket.send(tosend)
 }
 
 function possocket(playerid) {
     let socket = new WebSocket(serverscript)
     socket.onopen = function(e) {
-        setInterval(function () {updatepos(socket, playerid)}, upm * 50)
+        setInterval(function () {updatepos(socket, playerid)}, upm * 5)
     }
 }
 
@@ -134,6 +145,7 @@ function sync(playerid) {
     }
     socket.onmessage = function(e) {
         level = JSON.parse(e.data)["lvl"]
+        level = drawplayers(level)
     }
 }
 
