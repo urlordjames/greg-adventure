@@ -148,7 +148,7 @@ function sync(playerid) {
         socket.send(tosend)
     }
     socket.onmessage = function(e) {
-        level = JSON.parse(e.data)["lvl"]
+        level = JSON.parse(e.data)["lvl]
         level = drawplayers(level)
     }
 }
