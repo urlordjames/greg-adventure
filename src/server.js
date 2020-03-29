@@ -38,52 +38,59 @@ function authenticate(msg) {
 
 wss.on("connection", function(ws) {
     ws.on("message", function (message) {
-        let msg = JSON.parse(message)
-        switch (msg["type"]) {
-            case "sync":
-                if (!authenticate(msg)) {ws.close(); break}
-                let interval = setInterval(function () {
-                    ws.send(packet.buildpacket({"shortcut": "sync", "gamestate": level}))
-                }, 30)
-                ws.onclose = function () {
-                    clearInterval(interval)
-                    delete connections[msg["id"]]
-                    level["players"] = {}
-                }
-                break
-            case "move":
-                if (!authenticate(msg)) {ws.close(); break}
-                level["players"][msg["id"]] = {"x": msg["x"], "y": msg["y"], "acx": msg["acx"], "acy": msg["acy"]}
-                break
-            case "getid":
-                let id = Math.floor(Math.random() * Math.floor(999999))
-                while (id in connections) {
-                    id = Math.floor(Math.random() * Math.floor(999999))
-                }
-                console.log(msg["auth"])
-                if (msg["auth"] == undefined) {
-                    ws.close()
-                    break
-                }
-                connections[id] = {}
-                connections[id]["auth"] = msg["auth"]
-                ws.send(packet.buildpacket({"shortcut": "setid", "id": id}))
-                ws.close()
-                break
-            default:
-                ws.close()
-                break
+        try {handlemessage(message, ws)} catch (error) {
+            console.error(error)
+            console.log("error occured on message:")
+            console.log(message)
+            process.exit(1)
         }
     })
 })
+
+function handlemessage (message, ws) {
+    let msg = JSON.parse(message)
+    switch (msg["type"]) {
+        case "sync":
+            if (!authenticate(msg)) {ws.close(); break}
+            let interval = setInterval(function () {
+                ws.send(packet.buildpacket({"shortcut": "sync", "gamestate": level}))
+            }, 30)
+            ws.onclose = function () {
+                clearInterval(interval)
+                delete connections[msg["id"]]
+                level["players"] = {}
+            }
+            break
+        case "move":
+            if (!authenticate(msg)) {ws.close(); break}
+            level["players"][msg["id"]] = {"x": msg["x"], "y": msg["y"], "acx": msg["acx"], "acy": msg["acy"]}
+            break
+        case "getid":
+            let id = Math.floor(Math.random() * Math.floor(999999))
+            while (id in connections) {
+                id = Math.floor(Math.random() * Math.floor(999999))
+            }
+            console.log(msg["auth"])
+            if (msg["auth"] == undefined) {
+                ws.close()
+                break
+            }
+            connections[id] = {}
+            connections[id]["auth"] = msg["auth"]
+            ws.send(packet.buildpacket({"shortcut": "setid", "id": id}))
+            ws.close()
+            break
+        default:
+            ws.close()
+            break
+    }
+}
 
 server.on("request", function (req, res) {
     serve(req, res, finalhandler(req, res))
 })
 
 server.on("upgrade", function (request, socket, head) {
-    const pathname = url.parse(request.url).pathname
-
     wss.handleUpgrade(request, socket, head, function (ws) {
         wss.emit("connection", ws, request)
     })
