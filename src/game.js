@@ -67,7 +67,6 @@ function loop() {
     frictionstep(0.02)
     x += acx
     y += acy
-    extrapolateplayers()
     for (i in level.entities) {
         let entity = level.entities[i]
         drawimg(entity["name"], entity["x"], entity["y"], entity["scale"], entity["dynamic"])
@@ -157,10 +156,10 @@ function sync(playerid) {
 function main() {
     canvas = document.getElementById("canvas")
     context = canvas.getContext("2d")
-    setInterval(loop, upm)
     let idprmose = getnextid()
     idprmose.then(function (resolvedid) {
         playerid = resolvedid
+        setInterval(loop, upm)
         console.log(playerid)
         sync(playerid)
         possocket(playerid)

@@ -6,8 +6,8 @@ const url = require('url')
 const packet = require("./libs/packet.js")
 const main = require("./main.js")
 
-let egg = 100
-let egg2 = -100
+let egg = 0
+let egg2 = 0
 
 let level = main.level
 
@@ -16,9 +16,6 @@ setInterval(function() {
     egg2 = Math.floor(Math.random() * Math.floor(100))
     level["entities"] = [{"name": "cheezethem.png", "x": egg, "y": egg2, "scale": 1, "dynamic": true}]
 }, 100)
-setInterval(function() {
-    level["players"] = {}
-}, 1000)
 
 let connections = {}
 
@@ -51,6 +48,7 @@ wss.on("connection", function(ws) {
                 ws.onclose = function () {
                     clearInterval(interval)
                     delete connections[msg["id"]]
+                    level["players"] = {}
                 }
                 break
             case "move":
