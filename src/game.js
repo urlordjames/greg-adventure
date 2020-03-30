@@ -8,7 +8,12 @@ const keys = {
     65: "a",
     83: "s",
     68: "d",
-    69: "e"
+    69: "e",
+    38: "w",
+    37: "a",
+    40: "s",
+    39: "d",
+    90: "e"
 }
 const upm = 15
 let deltatime = 0
