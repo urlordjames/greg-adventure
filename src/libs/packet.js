@@ -36,4 +36,5 @@ function buildpacket(data) {
 /*client
 /*
 clientend*/
-exports.buildpacket = buildpacket //*/
+exports.buildpacket = buildpacket
+//*/
