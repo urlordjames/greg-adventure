@@ -6,24 +6,9 @@ jobs:
     steps:
       - checkout
       - run: cd src && npm test
-  deploy:
-    machine:
-      enabled: true
-    steps:
-      - add_ssh_keys:
-          fingerprints: "0d:fc:a3:98:93:03:c2:24:6e:9f:79:a0:5a:ca:84:84"
-      - run:
-          name: deploy
-          command: |
-            ssh root@173.255.230.249 "/root/greg/build.sh"
+
 workflows:
    version: 2
    test-and-deploy:
      jobs:
       - test
-      - deploy:
-          requires:
-            - test
-          filters:
-            branches:
-              only: master
